@@ -85,18 +85,43 @@ class molecule:
         return k
 
     def ring_finding(self, ring_path):
-        bond_couple = [(self.get_bonds['first atom nb'][k],self.get_bonds['second atom nb'][k]) for k in range(len(self.get_bonds))]+[(self.get_bonds['second atom nb'][k], self.get_bonds['first atom nb'][k]) for k in range(len(self.get_bonds))]     #We create a list of tuple. Each tuple represent a bond. We add the tuple in both direction : (3,4) and (4,3).
-        if len(ring_path) > 2 and ring_path[0] == ring_path[-1] and all(bond in bond_couple for bond in [(ring_path[k], ring_path[k+1]) for k in range(len(ring_path[:-1]))]) is True:    #we check that all the bond (tuple) between the atoms of the ring path are in our bond_couple list. 
-            print("Path exists.")
-        else:
-            print("Path does not exist.")
+        graph = {}
+        for row in self.get_atoms.index:
+            graph[row] = self.atom_neighbours(row)
+
+        # Conversion of ring_path into integers
+        ring_atoms = list(map(int, ring_path.split()))
+        if len(ring_atoms) == 0:
+            print("no path provided")
+        if len(ring_atoms) < 3:
+            print("Invalid input: not enough atoms to form a cycle.")
+        if len(ring_atoms) == 1:
+            print("Invalid input: only one atom provided.")
+
+        for i in range(len(ring_atoms)):
+            if ring_atoms[(i + 1) % len(ring_atoms)] not in graph[ring_atoms[i]]:
+                print(f"Invalid cycle: no bond between {current_atom} and {next_atom}.")
+        print("Valid cycle.")
 
     def ring_finding_st(self, ring_path):
-        bond_couple = [(self.get_bonds['first atom nb'][k],self.get_bonds['second atom nb'][k]) for k in range(len(self.get_bonds))]+[(self.get_bonds['second atom nb'][k], self.get_bonds['first atom nb'][k]) for k in range(len(self.get_bonds))]     #We create a list of tuple. Each tuple represent a bond. We add the tuple in both direction : (3,4) and (4,3).
-        if len(ring_path) > 2 and ring_path[0] == ring_path[-1] and all(bond in bond_couple for bond in [(ring_path[k], ring_path[k+1]) for k in range(len(ring_path[:-1]))]) is True:    #we check that all the bond (tuple) between the atoms of the ring path are in our bond_couple list. 
-            st.success("Path exists.")
-        else:
-            st.error("Path does not exist.")
+        graph = {}
+        for row in self.get_atoms.index:
+            graph[row] = self.atom_neighbours(row)
+
+        # Conversion of ring_path into integers
+        ring_atoms = list(map(int, ring_path.split()))
+        if len(ring_atoms) == 0:
+            return st.warning("no path provided")
+        if len(ring_atoms) < 3:
+            return st.warning("Invalid input: not enough atoms to form a cycle.")
+        if len(ring_atoms) == 1:
+            return st.warning("Invalid input: only one atom provided.")
+
+        for i in range(len(ring_atoms)):
+            if ring_atoms[(i + 1) % len(ring_atoms)] not in graph[ring_atoms[i]]:
+                return st.warning(f"Invalid cycle: no bond between {current_atom} and {next_atom}.")
+
+        return st.success("Valid cycle !")
 
 #This class will be useful for subsequents methods comparing molecules
 class all_molecule:

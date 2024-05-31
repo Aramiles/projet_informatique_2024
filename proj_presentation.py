@@ -4,6 +4,7 @@ from rdkit import Chem
 from rdkit.Chem import Draw
 import os
 import pandas as pd
+import time
 import re
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service
@@ -15,7 +16,6 @@ def wiki_search(name):
     firefox_driver_path = "geckodriver-v0.33.0-win64/geckodriver.exe"
     firefox_options = Options()
     firefox_options.add_argument('--headless')  # Activer le mode headless
-    firefox_options.add_argument('--window-size=800,800')
     
     service = Service(executable_path=firefox_driver_path)
     browser = webdriver.Firefox(service=service, options=firefox_options)
@@ -25,7 +25,7 @@ def wiki_search(name):
     search_box = browser.find_element(By.ID, 'searchInput')
     search_box.send_keys(name)
     search_box.submit()
-    import time
+    
     time.sleep(1)
     
     paragraphs = browser.find_elements(By.TAG_NAME, 'p')
@@ -38,11 +38,12 @@ def wiki_search(name):
     clean_text = re.sub(r'\[\d+\]', '', first_paragraph_with_text.text)
     st.write(clean_text)
     st.write(f"from the english wikipedia page about {name}")
-    time.sleep(1)
+    
     browser.quit()
 
-            #title
 
+    
+            #title
 
 st.title("project of molecule's analysis")
 
@@ -112,7 +113,7 @@ try:
         st.markdown("""<style>.centered-line {width: 90%;margin: 0 auto;border: 1px solid #ddd}</style>""", unsafe_allow_html=True)
         st.markdown("<hr class='centered-line'>", unsafe_allow_html=True)
         
-        st.subheader("3)   **Some functionalities**")
+        st.subheader("2)   **Some functionalities**")
 
 
             #project's functions
@@ -140,7 +141,6 @@ try:
                  #2D distance
             
             st.subheader("C- Topological distance between two atoms of the molecule")
-
             couple = st.text_input(f"Please enter the identifier of atom 1 and 2 with a space between (between 1 and {number_of_atoms}) ")
             
             try:
@@ -213,12 +213,10 @@ try:
         ring_chain = st.text_input(f"Please enter the identifiers of atoms you want to check if they form a ring. Put an espace between each indentifier (identifiers should be between 1 and {number_of_atoms}) ")
         mole.ring_finding_st(ring_chain)
 
-                
+    st.subheader("3)   **Conclusion**")
+    st.write(f"It is possible and simple to create and add new features without significantly modifying the source code. Students in the next years will be able to make this page more complete. We hope we were able to help you with your file: {user_input}")
+        
 except:
     st.write("File not found or no file provided")
 
 
-#lydia Aly (diplomate egyptienne en france)
-#Sara Elessawy (diplomate egyptienne en france)
-#Menna-tullah Moustafa (diplomate egyptienne au caire)
-#Ehab Ahmed Badawy (ambassadeur d'Egypte en france)
