@@ -41,9 +41,23 @@ def wiki_search(name):
     
     browser.quit()
 
-
+def save_uploaded_file(uploaded_file):
+    try:
+        destination_path = os.path.join(os.path.dirname(os.path.abspath(__file__))+"\MOL_files", uploaded_file.name)
+        
+        # Lire le fichier téléchargé et l'écrire dans le dossier de destination
+        with open(destination_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        
+        return destination_path
+    except Exception as e:
+        st.error(f"Erreur lors de l'enregistrement du fichier: {e}")
+        return None
+    
     
             #title
+
+
 
 st.title("project of molecule's analysis")
 
@@ -52,6 +66,16 @@ st.subheader("1)   **let's charge datas**")
             #charge datas
 
 user_input = st.text_input("write the name of your folder on this case")
+uploaded_file = st.file_uploader("Choose a file .mol", type=['mol'])
+if uploaded_file is not None:
+    destination_folder = "uploaded_files"  # Le dossier où le fichier sera déplacé
+    file_path = save_uploaded_file(uploaded_file)
+    
+    if file_path:
+        st.success(f"File successfully saved to {file_path}")
+        user_input = uploaded_file.name
+        
+    
 try:
     new_mol = molecule(user_input)
     if new_mol.load_verify_st() == True :
